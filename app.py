@@ -9,7 +9,7 @@ def logistic_curve(Nprev, K, r,  T, n_points):
     N = K / (1 + (K / Nprev - 1) * np.exp(-r * t))
     return t, N
 
-def simulate(N0, K, r, T, I, T_end=100, n_points=100):
+def simulate(N0, K, r, T, I, T_end, n_points=100):
     times = []
     pops = []
     N_prev = N0
@@ -17,8 +17,9 @@ def simulate(N0, K, r, T, I, T_end=100, n_points=100):
     n_steps = int(T_end/T)
 
     for step in range(1, n_steps + 2):
-        if t_global+T>= T_end:
-            T= T_end-T
+        if t_global+T> T_end:
+            T= T_end-(step-1)*T
+            print(T)
         # logistic growth within this interval
         t_local, N_local = logistic_curve(N_prev, K, r, T, n_points)
         times.extend(t_global + t_local)
@@ -29,10 +30,12 @@ def simulate(N0, K, r, T, I, T_end=100, n_points=100):
         t_global += T
 
         # store the removal jump as well
-        times.append(t_global)
-        pops.append(N_prev)
+        if t_global+T<= T_end:
+            times.append(t_global)
+            pops.append(N_prev)
 
     return np.array(times), np.array(pops)
+
 
 # --- Streamlit interface ---
 st.title("📈 Logistic Growth with Periodic Removal")
