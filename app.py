@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import streamlit as st
 
-def logistic_curve(N0, K, r, T, n_points=100):
+def logistic_curve(N0, K, r, T, n_points=1000):
     """Solve logistic curve for one interval of duration T."""
     t = np.linspace(0, T, n_points)
     N = K / (1 + (K / N0 - 1) * np.exp(-r * t))
