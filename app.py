@@ -35,6 +35,7 @@ def simulate(N0, K, r, T, I, T_end=100, n_points=100):
             pops.append(N_prev)
 
     return np.array(times), np.array(pops)
+    
 def simulate_variable_removal(N0, K, r, T, I_mean, I_var, T_end=100, n_points=100):
     """Simulate logistic growth with periodic removal, variable intensity."""
     times = []
@@ -42,7 +43,7 @@ def simulate_variable_removal(N0, K, r, T, I_mean, I_var, T_end=100, n_points=10
     N_prev = N0
     t_global = 0
     n_steps = int(T_end/T)
-    I= I_mean + I_var
+
 
     for step in range(1, n_steps + 2):
         if t_global + T > T_end:
@@ -53,7 +54,8 @@ def simulate_variable_removal(N0, K, r, T, I_mean, I_var, T_end=100, n_points=10
         pops.extend(N_local)
 
         # sample removal fraction from normal distribution
-        I_actual =I_mean + (-1)**n_steps *I_var  
+        I_actual =I_mean + I_var *(-1)**step 
+        print(I_actual,n_steps)
         N_prev = (1 - I_actual) * N_local[-1]
         t_global += T
 
@@ -63,6 +65,7 @@ def simulate_variable_removal(N0, K, r, T, I_mean, I_var, T_end=100, n_points=10
             pops.append(N_prev)
 
     return np.array(times), np.array(pops)
+
 
 # --- Streamlit interface ---
 st.title("📈 Logistic Growth with Periodic Removal")
@@ -74,7 +77,7 @@ I = st.slider("Removal fraction I (%)", 0, 100, 20, 5) / 100.0
 N0 = st.slider("Initial population N0", 1, 100, 10)
 T_end = st.slider("End simulation", 1, 1000, 100, 10)
 # New parameter for variable removal
-I_var = st.slider("Removal variability (%)", 0, 100, 5, 1) / 100.0
+I_var = st.slider("Removal variability (%)", 0, I, 5, 1) / 100.0
 
 # --- Simulations ---
 # deterministic removal
