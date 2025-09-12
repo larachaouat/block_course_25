@@ -45,7 +45,7 @@ r = st.slider("Growth rate r", 0.0, 5.0, 0.3, 0.01)
 T = st.slider("Period T", 0.1, 100.0, 1.0, 1.0)
 I = st.slider("Removal fraction I (%)", 0, 100, 20, 5) / 100.0
 N0 = st.slider("Initial population N0", 1, 100, 10)
-T = st.slider("End simulation", 1, 1000, 100, 10)
+T_end = st.slider("End simulation", 1, 1000, 100, 10)
 
 times, pops = simulate(N0, K, r, T, I, T_end)
 
