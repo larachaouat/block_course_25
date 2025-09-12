@@ -66,6 +66,35 @@ def simulate_variable_removal(N0, K, r, T, I_mean, I_var, T_end=100, n_points=10
 
     return np.array(times), np.array(pops)
 
+def simulate_asym_removal(N0, K, r, T, I_mean, I_var, T_end=100, n_points=100):
+    """Simulate logistic growth with periodic removal, variable asymmetric intensity."""
+    times = []
+    pops = []
+    N_prev = N0
+    t_global = 0
+    n_steps = int(T_end/T)
+
+
+    for step in range(1, n_steps + 4):
+        if t_global + T*(.5+.3*(-1)**step) > T_end:
+            T = T_end - (step-1) * T*(.5+.3*(-1)**step)
+            print(T*(.5+.3*(-1)**step))
+
+        t_local, N_local = logistic_curve(N_prev, K, r, T*(.5+.3*(-1)**step), n_points)
+        times.extend(t_global + t_local)
+        pops.extend(N_local)
+
+        # sample removal fraction from normal distribution
+        I_actual =I_mean + I_var *(-1)**step 
+        N_prev = (1 - I_actual) * N_local[-1]
+        t_global += T*(.5+.3*(-1)**step)
+
+        # store the removal jump
+        if t_global + T*(.5+.3*(-1)**step) <= T_end:
+            times.append(t_global)
+            pops.append(N_prev)
+
+    return np.array(times), np.array(pops)
 
 # --- Streamlit interface ---
 st.title("📈 Logistic Growth with Periodic Removal")
@@ -90,10 +119,14 @@ times_det, pops_det = simulate(N0, K, r, T, I, T_end)
 # variable removal
 times_var, pops_var = simulate_variable_removal(N0, K, r, T, I, I_var, T_end)
 
+# asynetric removal
+times_asym, pops_asym = simulate_asym_removal(N0, K, r, T, I, I_var, T_end)
+
 # --- Plotting ---
 fig, ax = plt.subplots(figsize=(8,5))
-ax.plot(times_det, pops_det, label="Fixed removal", color="tab:blue")
-ax.plot(times_var, pops_var, label="Variable removal", color="tab:red", alpha=0.7)
+ax.plot(times_det, pops_det, label="Constant removal", color="tab:blue")
+ax.plot(times_var, pops_var, label="Symmetric removal", color="tab:red", alpha=0.7)
+ax.plot(times_asym, pops_asym, color="tab:green", linestyle=":")
 ax.set_xlabel("Time")
 ax.set_ylabel("Population N")
 ax.set_title("Logistic growth with periodic removal")
