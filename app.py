@@ -24,7 +24,7 @@ r = st.slider("Growth rate r", 0.01, 1.0, 0.3, 0.01)
 T = st.slider("Period T", 0.1, 5.0, 1.0, 0.1)
 I = st.slider("Removal fraction I (%)", 0, 90, 20, 5) / 100.0
 N0 = st.slider("Initial population N0", 1, 100, 10)
-n_steps = st.slider("Number of steps", 5, 100, 20)
+n_steps = st.slider("Number of steps", 0, 100, 20)
 
 times, pops = simulate(N0, K, r, T, I, n_steps)
 
