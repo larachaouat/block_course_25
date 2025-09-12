@@ -2,31 +2,32 @@ import numpy as np
 import matplotlib.pyplot as plt
 import streamlit as st
 
-def logistic_curve(N0, K, r, T, n_points=1000):
+def logistic_curve(Nprev, K, r,  T, n_points):
     """Solve logistic curve for one interval of duration T."""
     t = np.linspace(0, T, n_points)
-    N = K / (1 + (K / N0 - 1) * np.exp(-r * t))
+    N = K / (1 + (K / Nprev - 1) * np.exp(-r * t))
     return t, N
 
-def simulate(N0, K, r, T, I, n_steps, n_points=1000):
+def simulate(N0, K, r, T, I, n_steps, n_points=100):
     times = []
     pops = []
-    N = N0
+    N_prev = N0
     t_global = 0
 
     for step in range(1, n_steps + 1):
+        print(t_global)
         # logistic growth within this interval
-        t_local, N_local = logistic_curve(N, K, r, T, n_points)
+        t_local, N_local = logistic_curve(N_prev, K, r,T, n_points)
         times.extend(t_global + t_local)
         pops.extend(N_local)
 
         # apply removal at the end
-        N = (1 - I) * N_local[-1]
+        N_prev = (1 - I) * N_local[-1]
         t_global += T
 
         # store the removal jump as well
         times.append(t_global)
-        pops.append(N)
+        pops.append(N_prev)
 
     return np.array(times), np.array(pops)
 
