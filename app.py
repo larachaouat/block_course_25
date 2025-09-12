@@ -42,6 +42,7 @@ def simulate_variable_removal(N0, K, r, T, I_mean, I_var, T_end=100, n_points=10
     N_prev = N0
     t_global = 0
     n_steps = int(T_end/T)
+    I= I_mean + I_var
 
     for step in range(1, n_steps + 2):
         if t_global + T > T_end:
@@ -52,7 +53,7 @@ def simulate_variable_removal(N0, K, r, T, I_mean, I_var, T_end=100, n_points=10
         pops.extend(N_local)
 
         # sample removal fraction from normal distribution
-        I_actual = np.clip(np.random.normal(I_mean, I_var), 0, 1)  # ensure 0 <= I <= 1
+        I_actual =I_mean + (-1)**n_steps *I_var  # ensure 0 <= I <= 1
         N_prev = (1 - I_actual) * N_local[-1]
         t_global += T
 
