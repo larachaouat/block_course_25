@@ -75,7 +75,7 @@ def simulate_asym_removal(N0, K, r, T, I_mean, I_var, T_end=100, n_points=100):
     n_steps = int(T_end/T)
 
 
-    for step in range(1, n_steps + 4):
+    for step in range(0, n_steps + 3):
         if t_global + T*(.5+.3*(-1)**step) > T_end:
             T = T_end - (step-1) * T*(.5+.3*(-1)**step)
             print(T*(.5+.3*(-1)**step))
@@ -126,7 +126,7 @@ times_asym, pops_asym = simulate_asym_removal(N0, K, r, T, I, I_var, T_end)
 fig, ax = plt.subplots(figsize=(8,5))
 ax.plot(times_det, pops_det, label="Constant removal", color="tab:blue")
 ax.plot(times_var, pops_var, label="Symmetric removal", color="tab:red", alpha=0.7)
-ax.plot(times_asym, pops_asym, color="tab:green", linestyle=":")
+ax.plot(times_asym, pops_asym,label="Asymmetric removal", color="tab:green", linestyle=":")
 ax.set_xlabel("Time")
 ax.set_ylabel("Population N")
 ax.set_title("Logistic growth with periodic removal")
