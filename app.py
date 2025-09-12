@@ -43,7 +43,7 @@ T = st.slider("Period T", 0.1, 100.0, 1.0, 1.0)
 I = st.slider("Removal fraction I (%)", 0, 100, 20, 5) / 100.0
 N0 = st.slider("Initial population N0", 1, 100, 10)
 
-times, pops = simulate(N0, K, r, T, I, n_steps)
+times, pops = simulate(N0, K, r, T, I, T_end)
 
 fig, ax = plt.subplots(figsize=(8,5))
 ax.plot(times, pops, color="tab:blue")
