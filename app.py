@@ -77,7 +77,7 @@ I = st.slider("Removal fraction I (%)", 0, 100, 20, 5) / 100.0
 N0 = st.slider("Initial population N0", 1, 100, 10)
 T_end = st.slider("End simulation", 1, 1000, 100, 10)
 # New parameter for variable removal
-I_var = st.slider("Removal variability (%)", 0, I, 5, 1) / 100.0
+I_var = st.slider("Removal variability (%)", 0, I*100, 5, 1) / 100.0
 
 # --- Simulations ---
 # deterministic removal
