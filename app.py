@@ -8,7 +8,7 @@ def logistic_curve(N0, K, r, T, n_points=100):
     N = K / (1 + (K / N0 - 1) * np.exp(-r * t))
     return t, N
 
-def simulate(N0, K, r, T, I, n_steps, n_points=100):
+def simulate(N0, K, r, T, I, n_steps, n_points=1000):
     times = []
     pops = []
     N = N0
