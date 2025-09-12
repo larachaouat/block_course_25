@@ -9,16 +9,18 @@ def logistic_curve(Nprev, K, r,  T, n_points):
     N = K / (1 + (K / Nprev - 1) * np.exp(-r * t))
     return t, N
 
-def simulate(N0, K, r, T, I, n_steps, n_points=100):
+def simulate(N0, K, r, T, I, T_end=100, n_points=100):
     times = []
     pops = []
     N_prev = N0
     t_global = 0
+    n_steps = int(T_end/T)
 
-    for step in range(1, n_steps + 1):
-        print(t_global)
+    for step in range(1, n_steps + 2):
+        if t_global+T>= T_end:
+            T= T_end-T
         # logistic growth within this interval
-        t_local, N_local = logistic_curve(N_prev, K, r,T, n_points)
+        t_local, N_local = logistic_curve(N_prev, K, r, T, n_points)
         times.extend(t_global + t_local)
         pops.extend(N_local)
 
