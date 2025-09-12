@@ -72,12 +72,16 @@ st.title("📈 Logistic Growth with Periodic Removal")
 
 K = st.slider("Carrying capacity K", 1, 100, 10, 1)
 r = st.slider("Growth rate r", 0.0, 5.0, 0.3, 0.01)
-T = st.slider("Period T", 0.1, 100.0, 1.0, 1.0)
-I = st.slider("Removal fraction I (%)", 0, 100, 20, 5) / 100.0
 N0 = st.slider("Initial population N0", 1, 100, 10)
 T_end = st.slider("End simulation", 1, 1000, 100, 10)
-# New parameter for variable removal
-I_var = st.slider("Removal variability (%)", 0, I*100, 5, 1) / 100.0
+T = st.slider("Period T", 0.1, 100.0, 1.0, 1.0)
+I_percent = st.slider("Removal fraction I (%)", 0, 100, 20, 5)
+I = I_percent / 100.0
+
+# Removal variability (%)
+# default variability 5%, cannot exceed I_percent
+I_var_percent = st.slider("Removal variability (%)", 0, I_percent, min(5, I_percent), 1)
+I_var = I_var_percent / 100.0
 
 # --- Simulations ---
 # deterministic removal
