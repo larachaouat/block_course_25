@@ -40,13 +40,14 @@ def simulate(N0, K, r, T, I, T_end=100, n_points=100):
 # --- Streamlit interface ---
 st.title("📈 Logistic Growth with Periodic Removal")
 
-K = st.slider("Carrying capacity K", 1, 100, 100, 10)
+K = st.slider("Carrying capacity K", 1.0, 100.0, 10.0, 1)
 r = st.slider("Growth rate r", 0.0, 5.0, 0.3, 0.01)
 T = st.slider("Period T", 0.1, 100.0, 1.0, 1.0)
 I = st.slider("Removal fraction I (%)", 0, 100, 20, 5) / 100.0
 N0 = st.slider("Initial population N0", 1, 100, 10)
+T = st.slider("End simulation", 1, 1000, 100, 10)
 
-times, pops = simulate(N0, K, r, T, I)
+times, pops = simulate(N0, K, r, T, I, T_end)
 
 fig, ax = plt.subplots(figsize=(8,5))
 ax.plot(times, pops, color="tab:blue")
