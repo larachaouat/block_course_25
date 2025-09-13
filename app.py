@@ -9,7 +9,7 @@ def logistic_curve(Nprev, K, r,  T, n_points):
     N = K / (1 + (K / Nprev - 1) * np.exp(-r * t))
     return t, N
 
-def simulate(N0, K, r, T, I, T_end=100, n_points=100):
+def simulate(N0, K, r, T, I, T_end, n_points=100):
     times = []
     pops = []
     N_prev = N0
@@ -35,7 +35,6 @@ def simulate(N0, K, r, T, I, T_end=100, n_points=100):
             pops.append(N_prev)
 
     return np.array(times), np.array(pops)
-    
 def simulate_variable_removal(N0, K, r, T, I_mean, I_var, T_end=100, n_points=100):
     """Simulate logistic growth with periodic removal, variable intensity."""
     times = []
@@ -54,8 +53,7 @@ def simulate_variable_removal(N0, K, r, T, I_mean, I_var, T_end=100, n_points=10
         pops.extend(N_local)
 
         # sample removal fraction from normal distribution
-        I_actual =I_mean + I_var *(-1)**step 
-        print(I_actual,n_steps)
+        I_actual =I_mean + I_var/2 *(-1)**step 
         N_prev = (1 - I_actual) * N_local[-1]
         t_global += T
 
@@ -73,24 +71,28 @@ def simulate_asym_removal(N0, K, r, T, I_mean, I_var, T_end=100, n_points=100):
     N_prev = N0
     t_global = 0
     n_steps = int(T_end/T)
+    i = 0
 
-
-    for step in range(0, n_steps + 3):
-        if t_global + T*(.5+.3*(-1)**step) > T_end:
-            T = T_end - (step-1) * T*(.5+.3*(-1)**step)
-            print(T*(.5+.3*(-1)**step))
-
-        t_local, N_local = logistic_curve(N_prev, K, r, T*(.5+.3*(-1)**step), n_points)
+    for step in range(1, n_steps + 2):
+        if t_global + T > T_end:
+            T = T_end - (step-1) * T
+        i+=1
+        # logistic growth within this interval
+        t_local, N_local = logistic_curve(N_prev, K, r, T, n_points)
         times.extend(t_global + t_local)
         pops.extend(N_local)
-
-        # sample removal fraction from normal distribution
-        I_actual =I_mean + I_var *(-1)**step 
-        N_prev = (1 - I_actual) * N_local[-1]
-        t_global += T*(.5+.3*(-1)**step)
-
+        if i>2:
+            print(i)
+            i=0
+            I_actual =I_mean + 2/3* I_var 
+            N_prev = (1 - I_actual) * N_local[-1]
+            t_global += T
+        else:
+            I_actual =I_mean - 1/3*I_var 
+            N_prev = (1 - I_actual) * N_local[-1]
+            t_global += T
         # store the removal jump
-        if t_global + T*(.5+.3*(-1)**step) <= T_end:
+        if t_global + T <= T_end:
             times.append(t_global)
             pops.append(N_prev)
 
@@ -106,10 +108,8 @@ T_end = st.slider("End simulation", 1, 1000, 100, 10)
 T = st.slider("Period T", 0.1, 100.0, 1.0, 1.0)
 I_percent = st.slider("Removal fraction I (%)", 0, 100, 20, 5)
 I = I_percent / 100.0
-
 # Removal variability (%)
-# default variability 5%, cannot exceed I_percent
-I_var_percent = st.slider("Removal variability (%)", 0, I_percent, min(5, I_percent), 1)
+I_var_percent = st.slider("Removal variability (%)", 0, I_percent, min(0, I_percent), 1)
 I_var = I_var_percent / 100.0
 
 # --- Simulations ---
