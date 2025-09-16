@@ -110,7 +110,7 @@ I_percent = st.slider("Removal fraction I (%)", 0, 100, 20, 5)
 I = I_percent / 100.0
 # Removal variability (%)
 I_var_max = I_percent/2
-I_var_percent = st.slider("Removal variability (%)", 0, I_var_max, min(0, I_percent), 1)
+I_var_percent = st.slider("Removal variability (%)", 0, int(I_var_max), 0, 1)
 I_var = I_var_percent / 100.0
 
 # --- Simulations ---
